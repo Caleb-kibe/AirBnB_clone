@@ -1,9 +1,11 @@
+#!/usr/bin/python3
+"""Defines a class BaseModel"""
 from datetime import datetime
 import uuid
 
 
 class BaseModel:
-    """Definition of class BaseModel"""
+    """Represents BaseModel of the Hbnb applicaion"""
     def __init__(self):
         """Definition of the constructor"""
         self.id = str(uuid.uuid4())
