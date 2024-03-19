@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """Defines a class BaseModel"""
 from datetime import datetime
-import uuid
+import models
+from uuid import uuid4
 
 
 class BaseModel:
@@ -12,31 +13,33 @@ class BaseModel:
             *Args: Not used
             **Kwargs (dict): key/value pairs of the attributes
         """
+        time_form = "%Y-%m-%dT%H:%M:%S.%f"
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
         if len(kwargs) != 0:
             for k, v in kwargs.items():
                 if k == "created_at" or k == "updated_at":
-                    kwargs[k] = datetime.fromisoformat(v)
-
-            self.__dict__.update(kwargs)
+                    kwargs[k] = datetime.strptime(v, time_form)
+                else:
+                    self.__dict__[k] = v
         else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now().isoformat()
-            self.updated_at = datetime.now().isoformat()
-
-    def __str__(self):
-        """Defines how the object will be
-        displayed when printed as a string"""
-        return (f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}")
+            models.storage.new(self)
 
     def save(self):
         """Updates the updated_at attribute with the current datetime"""
-        self.updated_at = datetime.now().isoformat()
+        self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """Converts the object into a dictionary representation"""
         data = self.__dict__.copy()
         data["__class__"] = self.__class__.__name__
-        data["created_at"] = data["created_at"]
-        data["updated_at"] = data["updated_at"]
-        return {k: v.isoformat() if isinstance(v, datetime)
-                else v for k, v in data.items()}
+        data["created_at"] = self.created_at.isoformat()
+        data["updated_at"] = self.updated_at.isoformat()
+        return data
+
+    def __str__(self):
+        """Defines how the object will be
+        displayed when printed as a string"""
+        return (f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}")
