@@ -6,7 +6,7 @@ header {
 	position: fixed;
 }
 
-.logo {
+header .logo {
 	padding-left: 20px;
 	background: url("../images/logo.png") no-repeat center;
 }
