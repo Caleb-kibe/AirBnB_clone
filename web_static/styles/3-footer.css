@@ -4,6 +4,7 @@ footer {
 	width: 100%;
 	position: fixed;
 	border-top: 1px #CCCCCC;
+	bottom: 0;
 }
 
 footer p {
